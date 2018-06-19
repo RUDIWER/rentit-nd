@@ -1,0 +1,23 @@
+{
+    "send_message" : "Bericht versturen naar verhuurder",
+    "view_message" : "Bestaand bericht bekijken",
+    "to" : " -> ",
+    "from" : "van ",
+    "fromto" : "Conversatie",
+    "message_title" : "Onderwerp",
+    "message_text" : "Tekst",
+    "message_info" : "Info aanvraag : product",
+    "send" : "Verstuur",
+    "text_label" : "Boodschap",
+    "no_message_to_yourself" : "U kan geen boorschap naar U zelf sturen !!!",
+    "mail_success" : "Uw boodschap werd successvol verstuurd !!!",
+    "add" : "Nieuw bericht",
+    "message_list" : "Mijn berichten",
+    "unread" : " ",
+    "message_from_to" : "Van -> Naar",
+    "me" : "Mij",
+    "date" : "Creatie datum",
+    "request" : "Beantwoorden",
+    "message_req" : "Antw. aan : "
+
+}

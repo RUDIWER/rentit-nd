@@ -1,0 +1,112 @@
+@layout('layouts.app')
+
+@section('styles')
+     <link rel="stylesheet" type="text/css" href="/add-ons/DataTables/datatables.min.css"> 
+@endsection
+
+@section('content')
+    <main role="main">
+        <div class="container py-5">
+                        <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-12 mx-auto">
+                            <div class="card rounded-0">
+                                <div class="card-header">
+                                    <h3 class="mb-0">
+                                        <i class="fas fa-envelope fa-lg"></i>
+                                        {{ antl.formatMessage('mail.message_list') }}
+                                    </h3>
+                                </div>
+                                <div class="card-body">
+                                @include('partials.notification')
+                                <div class="table-responsive">
+                                    <table id="message_table" class="table table-sm table-bordered table-hover">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th scope="col">Id</th>
+                                                <th scope="col">{{antl.formatMessage('mail.unread')}}</th>
+                                                <th scope="col">{{antl.formatMessage('mail.message_from_to')}}</th>
+                                                <th scope="col">{{antl.formatMessage('mail.message_title')}}</th>
+                                                <th scope="col">{{antl.formatMessage('mail.date')}}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @each(message in messages)
+                                                <tr>
+                                                    <td>{{ message.id }}</td>
+                                                    <td>
+                                                        @if(message.unread)
+                                                            <i class="fas fa-envelope fa-lg"></i>
+                                                        @else
+                                                            <i class="fas fa-envelope-open fa-lg"></i>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        @if(message.owner_id === message.sender_id)
+                                                            {{antl.formatMessage('mail.me')}} -> {{message.receiver_name}}
+                                                        @else
+                                                            van {{message.sender_name}} -> {{antl.formatMessage('mail.me')}}
+                                                        @endif
+                                                    </td>
+                                                    <td>{{ message.message_title }}</td>
+                                                    <td>{{ message.created_at }}</td>
+                                                </tr>
+                                            @endeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                                    <hr>             
+                                    <button type="button" onclick="window.location.href='/message/create'" class="btn btn-success btn float-right " id="btnAdd">{{ antl.formatMessage('mail.add') }}</button>                                    
+                                    <button type="button" onclick="window.location.href='/'" class="btn btn-primary btn float-right mr-2" id="btnBack">{{ antl.formatMessage('messages.back') }}</button>
+                                </div>
+                            </div>
+                        </div>
+                     </div>
+                </div>
+            </div>
+        </div>
+    </main>
+@endsection
+
+@section('scripts')
+    <script type="text/javascript" src="/add-ons/DataTables/datatables.min.js"></script>
+    <script type="text/javascript" src="/add-ons/DataTables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js"></script> 
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready( function () {
+    // DataTables initialization   
+             
+            var messageTable = $('#message_table').DataTable({
+                dom :"<'myfilter'f><'mylength'l>t",
+                info: false,
+                order : [[ 0, "asc" ]],
+                paging : false,
+                language: {
+                    search: "",
+                    searchPlaceholder: "Zoeken...",
+                    zeroRecords: "{{antl.formatMessage('messages.zero_records')}}"
+                },
+                columnDefs : [
+                    {
+                        "targets": [ 0 ],
+                        "visible": false,
+                        "searchable": false
+                    },
+                ]
+              
+            });
+       
+    //Click on table row
+            $('#message_table').on('click', 'tr', function () {
+                var row = messageTable.row(this).data();
+                var messageId = row[0];
+                var path = "./my-message/edit/" + messageId;
+                window.location.href = path;
+            });
+
+            $(".alert").fadeTo(2000, 500).slideUp(500, function(){
+                $(".alert").slideUp(500);
+            });
+        });  
+    </script>
+@endsection

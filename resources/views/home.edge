@@ -1,0 +1,135 @@
+@layout('layouts.app')
+@section('content')
+  <main role="main">
+  <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+        <div class="container text-white">
+            <h1 class="display-3">
+                <i class="fas fa-share-alt-square"></i>
+                SHARE is CARE about eachother and the World !
+            </h1>
+            <p>In de toekomst zal men minder kopen, meer uitlenen, delen, hergebruiken</p>
+            <p>Rent It wil hier een platform voor bieden. </p>
+            <p>{{ antl.formatMessage('messages.greeting') }}</p>
+            
+            <p><a class="btn btn-primary btn-lg" href="#" role="button">Meer weten &raquo;</a></p>
+        </div>
+    </div>
+    &nbsp
+    &nbsp
+
+    <div class="container">
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="col-md-3">
+          <h2>
+            <i class="fas fa-arrow-alt-circle-right la-lg"></i>
+            Ik wil lenen
+        </h2>
+          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+          <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>
+        </div>
+        <div class="col-md-6">
+          @include('partials.searchRentForm')
+        </div>
+        <div class="col-md-3">
+            <h2>
+                <i class="far fa-arrow-alt-circle-left"></i>
+                Ik wil uitlenen
+            </h2>
+          <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+          <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>
+        </div>
+      </div>
+    </div> <!-- /container -->
+  </main>
+@endsection
+
+@section('scripts')
+ <script src="https://maps.googleapis.com/maps/api/js?v=3&libraries=places&callback=initAutocomplete" async defer></script> -->
+<!--   <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={{ googleMapsApi }}&libraries=places&callback=initAutocomplete"></script> -->
+<!--  <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places"></script> -->
+  <script type="text/javascript" charset="utf-8">
+    $(document).ready(function() {
+    //Disable button and distance field on open screen
+      $('#btnSubmit').prop('disabled', true);
+      $('#search_dist').prop('disabled', true);
+      $('#search_dist').val('0');
+
+      if($('#search_pors').val()){
+        $('#btnSubmit').prop('disabled', false); 
+      }
+
+      $('#search_pors').change(function() {
+        if($(this).val()){
+            $('#btnSubmit').prop('disabled', false); 
+            $('#search_dist').val('0');
+        }  
+      });
+      $('#search_where').change(function() {
+        if($(this).val()){
+            $('#search_dist').prop('disabled', false); 
+        } 
+      });
+    });
+
+     function initAutocomplete() {
+        var options = {
+            types: ['(regions)'],
+            componentRestrictions: {country: ["be", "nl"]}
+        };
+        autocomplete = new google.maps.places.Autocomplete((document.getElementById('search_where')),options);
+        autocomplete.addListener('place_changed', getAddress);   
+      };
+    
+  // Checks your location and does suggestions in neigberhood first
+  // Geolocate ev. via https://community.algolia.com/places/documentation.html  ipv. google maps gebruikt openstreets
+    
+
+    function geolocate() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+            var geolocation = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            };
+
+            var circle = new google.maps.Circle({
+                center: geolocation,
+                radius: position.coords.accuracy
+            });
+            autocomplete.setBounds(circle.getBounds());
+            });
+        }
+    }
+
+    function getAddress() {
+        // Get the place details from the autocomplete object.
+        var place = autocomplete.getPlace();
+        console.log(place)
+        var lat = place.geometry.location.lat();
+        document.getElementById("latitude").value = lat;
+        // get lng
+        var lng = place.geometry.location.lng();
+        document.getElementById("longitude").value = lng;
+      
+        for (var i = 0; i < place.address_components.length; i++) {
+            for (var j = 0; j < place.address_components[i].types.length; j++) {
+                if (place.address_components[i].types[j] == "postal_code") {
+                    postcode = place.address_components[i].long_name;
+                    document.getElementById("postcode").value = postcode;
+                }
+
+                if (place.address_components[i].types[j] == "locality") {
+                    city = place.address_components[i].long_name;
+                    document.getElementById("city").value = city;
+
+                }
+
+            }
+        }
+    }
+  </script>
+
+@endsection
+   

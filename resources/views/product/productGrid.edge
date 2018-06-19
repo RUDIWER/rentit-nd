@@ -1,0 +1,219 @@
+@layout('layouts.app')
+
+@section('styles')
+    <link href="/add-ons/pretty-checkbox/pretty-checkbox.min.css" rel="stylesheet">
+    <link href="/add-ons/dropify/dist/css/dropify.min.css" rel="stylesheet">
+@endsection
+
+@section('content')
+  <main role="main">
+		<div class="container">	
+             &nbsp
+            &nbsp
+            <div class="row">
+                <div class="col-sm-12">
+                    <p class="text-center">Hier Breadcrumbs plaatsen</a>
+                        <button type="button" onclick="window.location.href='/'" class="btn btn-primary btn float-right mr-2" id="btnBack">{{ antl.formatMessage('messages.back') }}</button>
+                    </p>
+                </div>
+            </div>
+            <br>
+			@each(product in productResults)
+				<div class="card product-card rounded-0 bg-light-gray">
+                    <article class="card-body-lg">
+                        <div class="row">
+            <!-- Upper element with titel & path -->
+                            <div class="col-sm-5">	
+                                <div class="row">
+                                    <aside class="col-sm-12 align-self-center">
+                                        <h3 class="title mb-0">
+                                            <a href="#">{{ product.title }}</a>
+                                        </h3>
+                                        <dd class="sub-title">{{ product.sub_title }}</dd>
+                                    </aside>
+                                </div>	
+            <!-- Picture element --- -->	
+                                <div class="row">
+                                    <aside class="col-sm-12 align-self-center">
+                                        <div class="img-big-wrap">
+                                            @if(product.picture_1 != null)
+                                                <span class="helper"></span><div> <a href="#"><img class="img-thumbnail center" src="{{ product.picture_1 }}"></a></div>
+                                            @else
+                                                <span class="helper"></span><div> <a href="#"><img class="img-thumbnail center" src="/images/products/no_pic.png"></a></div>
+                                            @endif
+
+                                        </div>
+                                    </aside>	
+                                </div>	
+                            </div>  <!-- col->
+            <!-- Left element with description & Price-->
+                            <div class="col-sm-7">
+                                <div class="row">
+            <!-- LInks to categorys -->
+                                    <div class="col-sm-12">
+                                        <p>	
+                                            @each(category in categories) 
+                                                @if(category.id === $parent.product.group)
+                                                    <a href="/group-rent-results/{{category.id}}">{{ category.category_name }}</a> /
+                                                @endif
+                                                @if(category.id === $parent.product.category)
+                                                    <a href="/category-rent-results/{{ category.id }}">{{ category.category_name }}</a> /
+                                                @endif
+                                                @if(category.id === $parent.product.sub_category)
+                                                    <a href="/sub-category-rent-results/{{ category.id }}">{{ category.category_name }}</a>
+                                                @endif
+                                            @endeach
+                                        </p>
+                                    </div> <!-- col-12-->
+                                    <div class="col-sm-12">
+                                        <p>
+                                            <dl class="item-property">
+                                                <dt>{{ antl.formatMessage('products.description') }}</dt>
+                                                <dd><p class="truncate">{{ product.description }} </p></dd>
+                                            </dl>
+                                        </p>
+                                    </div> <!-- col-12 -->    
+                                </div> <!-- row -->
+                                <hr>  
+                                <div class="row">
+                    <!-- Right column - First part -->
+                                    <div class="col-sm-7">
+                    <!-- Rent profile info -->
+                                        <dl>
+                                            <dt>{{ antl.formatMessage('products.rent_profile') }}</dt>
+                                            <dd>
+                                                @if(product.vat_number == '')
+                                                    <a><i class="fab fa-product-hunt"></i> {{ antl.formatMessage('products.profile_personal') }}</a>
+                                                @else
+                                                    <a><i class="far fa-building"></i> {{ antl.formatMessage('products.profile_company') }}</a>   
+                                                @endif 
+                                            </dd>
+                                            <dl>
+                                                <dt> {{ product.username}}</dt>
+                                                <dd> {{ product.addr1_postcode}} {{ product.addr1_city }}</dd>
+                                            </dl>
+                                            <dl>
+                                                <dt>
+                                                    {{ antl.formatMessage('products.reachable_via') }}
+                                                    <a href="/message/create/{{ product.user_id }}/{{ product.product_id }}/0"><i class="fas fa-envelope-square"></i></a>
+                                                </dt>
+                                            </dl>
+                                        </dl> 
+                    <!-- Days available -->
+                                        <dl>
+                                            <dt>{{ antl.formatMessage('products.days_available') }}</dt>
+                                            @if(product.available_mo)
+                                                {{ antl.formatMessage('products.monday') }}
+                                            @endif
+                                            @if(product.available_tue)
+                                                / {{ antl.formatMessage('products.tuesday') }}
+                                            @endif
+                                              @if(product.available_wed)
+                                                / {{ antl.formatMessage('products.wednessday') }}
+                                            @endif
+                                              @if(product.available_th)
+                                                / {{ antl.formatMessage('products.thurstday') }}
+                                            @endif
+                                            @if(product.available_fr)
+                                                / {{ antl.formatMessage('products.friday') }}
+                                            @endif
+                                            @if(product.available_sat)
+                                                / {{ antl.formatMessage('products.saturday') }}
+                                            @endif
+                                            @if(product.available_sun)
+                                                / {{ antl.formatMessage('products.sunday') }} 
+                                            @endif
+
+                                        </dl>
+                                    </div> <!-- col-sm-7 -->
+                    <!-- Rigth column - Second part with prices -->
+                                    <div class="col-sm-5"> 
+                                        <dl class=="price-detail-wrap">
+                                            @if(!product.price_hour && !product.price_day && !product.price_week && !prodcut.price_month)
+                                                <span class="price h3 text-warning"> 
+                                                    {{ antl.formatMessage('products.free_rent') }}
+                                                </span><br>
+                                                {{ antl.formatMessage('products.rentit_cost') }}
+                                            @else
+                                                <dt>{{ antl.formatMessage('products.prices') }}</dt>
+                                                <table>
+                                                    @if(product.price_hour)
+                                                        <tr>
+                                                            <td>
+                                                                <span class="price h3 text-warning"> 
+                                                                    <span class="currency">€</span>
+                                                                    <span class="num">{{product.price_hour}}</span>
+                                                                </span> 
+                                                                <span>{{ antl.formatMessage('products.per_hour') }}</span> 
+                                                                &nbsp &nbsp
+                                                            </td>
+                                                        </tr>
+                                                    @endif
+                                                    @if(product.price_day)
+                                                        <tr>
+                                                            <td>
+                                                                <span class="price h3 text-warning"> 
+                                                                    <span class="currency">€</span>
+                                                                    <span class="num">{{product.price_day}}</span>
+                                                                </span> 
+                                                                <span>{{ antl.formatMessage('products.per_day') }}</span> 
+                                                                &nbsp &nbsp
+                                                            </td>
+                                                        </tr>
+                                                    @endif
+                                                    @if(product.price_week)
+                                                        <tr>
+                                                            <td>
+                                                                <span class="price h3 text-warning"> 
+                                                                    <span class="currency">€</span>
+                                                                    <span class="num">{{product.price_week}}</span>
+                                                                </span> 
+                                                                <span>{{ antl.formatMessage('products.per_week') }}</span> 
+                                                            </td>
+                                                        </tr>
+                                                    @endif
+                                                    @if(product.price_month)
+                                                        <tr>
+                                                            <td>
+                                                                <span class="price h3 text-warning"> 
+                                                                    <span class="currency">€</span>
+                                                                    <span class="num">{{product.price_month}}</span>
+                                                                </span> 
+                                                                <span>{{ antl.formatMessage('products.per_month') }}</span> 
+                                                            </td>
+                                                        </tr>
+                                                    @endif
+                                                </table>  
+                                            @endif  
+                                        </dl>  <!-- item-property-hor .// -->  
+                                    </div>   <!-- col-sm-5 -->
+                                </div> <!-- row -->
+						    </div> <!-- col-sm-7 -->
+						</div> <!-- row.// -->  
+                    </article> <!-- card-body.// -->
+        <!-- Buttons -->
+                    <div class="row"> 
+                        <aside class="col-sm-12">	
+                            <hr>
+                            @if(!product.price_hour && !product.price_day && !product.price_week && !product.price_month)
+                                <a href="#" class="btn btn btn-primary float-right mr-2">{{ antl.formatMessage('products.loan_now') }}</a>
+                            @else
+                                <a href="#" class="btn btn btn-primary float-right mr-2">{{ antl.formatMessage('products.rent_now') }}</a>
+                            @endif
+                            <a href="#" class="btn btn-outline-primary text-uppercase float-right mr-2"> <i class="fas fa-shopping-cart"></i> Add to cart </a>
+                        </aside>
+                    </div> <!-- row -->
+				</div>  <!-- Card -->
+				&nbsp
+			@endeach
+		</div> <!-- Container -->	
+</main>
+@endsection
+@section('scripts')
+    <script src="/add-ons/shave/jquery.shave.min.js"></script>
+    <script type="text/javascript" charset="utf-8">
+        $(function(){
+            $('.truncate').shave(3);
+        });
+	</script>
+@endsection

@@ -1,0 +1,10 @@
+<h1> Hi {{ username }} </h1>
+
+<p>
+    Welcome to {{ APP_NAME() }}
+
+    Please confirm your email address by clicking the link below ?
+
+</p>
+    <a href="{{ appUrl('register/confirm/' + confirmation_token) }}">Confirm Email address</a>
+   

@@ -1,0 +1,66 @@
+<!-- NAVBAR ----------------- -->
+
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <a class="navbar-brand" href="/">{{ APP_NAME() }}</a>
+    <a class="navbar-brand" href="/"> {{ antl.formatMessage('messages.greeting') }} </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav ml-auto">
+    <!-- LOGIN - DROPDOWN --> 
+            @loggedIn
+                @if(profile.avatar)
+                    <div class="avatar">
+                        <img src="{{ profile.avatar }}">
+                    </div>  
+                @endif
+            @endloggedIn   
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    @loggedIn
+                        {{ auth.user.username }}
+                    @else
+                        {{ antl.formatMessage('messages.loginRegister') }}
+                    @endloggedIn
+                </a>
+                @loggedIn
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="/profile/edit">{{ antl.formatMessage('messages.myProfile') }}</a> 
+                        <a class="dropdown-item" href="/my-products">{{ antl.formatMessage('messages.myProducts') }}</a> 
+                        <a class="dropdown-item" href="/my-messages">{{ antl.formatMessage('messages.myMessages') }}</a> 
+                        <a class="dropdown-item" href="/logout">{{ antl.formatMessage('messages.logout') }}</a> 
+                    </div>
+                @else
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{{ route('login')}}">{{ antl.formatMessage('messages.login2') }}</a>  
+                        <a class="dropdown-item" href="{{ route('register')}}">{{ antl.formatMessage('messages.register2') }}</a> 
+                       
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">Something else here</a>
+                    </div>    
+                @endloggedIn
+            </li>       
+    <!-- LOCALE dropdown -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> 
+                     <i class="fas fa-globe fa-lg"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown01">
+                    @if(locale != 'nl')
+                        <a class="dropdown-item" href="/locale/nl">Nederlands</a>
+                    @endif
+               
+                    @if(locale != 'fr')
+                        <a class="dropdown-item" href="/locale/fr">Francais</a>
+                    @endif
+             
+                    @if(locale != 'en')
+                        <a class="dropdown-item" href="/locale/en">English</a>
+                    @endif
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
+

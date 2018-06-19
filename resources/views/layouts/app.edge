@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <link rel="icon" href="/images/favico/penguin.ico">
+   <!--     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">  -->
+        @!section('styles')
+        <title>RentIt</title>
+
+<!-- load CSS -->
+        <link rel="stylesheet" href="{{ mix('/css/app.css') }}">
+    </head>
+    <body>
+        @include('partials.navbar')
+        @!section('content')
+<!-- Load javascript ------------------------- -->
+        <script defer src="/add-ons/font-awesome/fontawesome-all.min.js"></script>
+        <script src="{{ mix('/js/app.js') }}"></script>
+        @!section('scripts')
+    </body>
+    <footer class="pt-4 my-md-5 pt-md-5 border-top">
+        @include('partials.footer')
+    </footer>
+</html>

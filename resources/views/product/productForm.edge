@@ -1,0 +1,771 @@
+@layout('layouts.app')
+
+@section('styles')
+    <link href="/add-ons/pretty-checkbox/pretty-checkbox.min.css" rel="stylesheet">
+    <link href="/add-ons/dropify/dist/css/dropify.min.css" rel="stylesheet">
+@endsection
+
+@section('content')
+    <main role="main">
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-12 mx-auto">
+                            <div class="card rounded-0">
+                                <div class="card-header">
+                                    <h3 class="mb-0">
+                                        <i class="fas fa-archive"></i>
+                                        {{ antl.formatMessage('products.product_form') }}
+                                    </h3>
+                                </div>
+                                <div class="card-body">
+                                @include('partials.notification')
+                                    <form id="formProduct" class="form" role="form" novalidate autocomplete="off" method="POST" action="/my-product/{{product.id}}"  enctype="multipart/form-data">
+                                    {{ csrfField() }}
+                            <!-- TAB NAVIGATION -->
+                                <!-- Nav tabs -->
+                                        <h5>
+                                            <ul class="nav nav-tabs">
+                                                <li class="nav-item">
+                                                    <a class="nav-link active" data-toggle="tab" href="#tab-1">
+                                                        <i class="fas fa-archive"></i>
+                                                        <i class="notsmscr">{{ antl.formatMessage('products.base') }}</i>
+                                                    </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" data-toggle="tab" href="#tab-2">
+                                                        <i class="fas fa-euro-sign"></i>
+                                                        <i class="notsmscr">{{ antl.formatMessage('products.prices') }}</i>
+                                                    </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" data-toggle="tab" href="#tab-3">
+                                                        <i class="fas fa-calendar-alt"></i>
+                                                        <i class="notsmscr">{{ antl.formatMessage('products.availability') }}</i>
+                                                    </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" data-toggle="tab" href="#tab-4">
+                                                        <i class="fas fa-camera-retro"></i>
+                                                        <i class="notsmscr">{{ antl.formatMessage('products.pictures') }}</i>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </h5>
+                                        &nbsp
+                                <!-- Tab panes -->
+                                        <div class="tab-content">
+                                    <!-- BASE TAB CONTENT -->
+                                            <div class="tab-pane active container" id="tab-1">
+                                    <!-- TITLE - PROFILE -->
+                                                <h5>
+                                                     <i class="fas fa-archive fa-lg"></i>
+                                                    {{ antl.formatMessage('products.base_info') }}
+                                                </h5>
+                                    <!-- Rent or loan-->
+                                                <div class="form-row">
+                                                    <div class="col-md-4">                            
+                                                        <div class="form-group">
+                                                            <label for="loan_or_rent">{{ antl.formatMessage('products.loan_or_rent') }}</label>
+                                                            <select class="form-control rounded-0 {{ elIf('is-invalid',getErrorFor('loan_or_rent'), hasErrorFor('loan_or_rent')) }}" id="loan_or_rent" name="loan_or_rent" required>
+                                                                <option value="empty" selected disabled>{{ antl.formatMessage('products.select')}}</option>
+                                                                <option value="0" 
+                                                                    {{ product.loan_or_rent == "0" ? 'selected="selected"' : ''  || old('loan_or_rent') == '0' ? 'selected="selected"' : ''}}>
+                                                                    {{ antl.formatMessage('products.rent') }}
+                                                                </option>
+                                                                <option value="1" 
+                                                                    {{ product.loan_or_rent == "1" ? 'selected="selected"' : ''  || old('loan_or_rent') == '1' ? 'selected="selected"' : ''}}>
+                                                                    {{ antl.formatMessage('products.loan') }}
+                                                                </option>
+                                                            </select>
+                                                            {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('loan_or_rent'), hasErrorFor('loan_or_rent')) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                     <!-- PORS -->
+                                                 <div class="form-row">
+                                                    <div class="col-md-4">                            
+                                                        <div class="form-group">
+                                                            <label for="pors">{{ antl.formatMessage('products.pors') }}</label>
+                                                            <select class="form-control rounded-0 {{ elIf('is-invalid',getErrorFor('pors'), hasErrorFor('pors')) }}" id="pors" name="pors" required>
+                                                                <option value="empty" selected disabled>{{ antl.formatMessage('products.select')}}</option>
+                                                                @each( pors in porses )
+                                                                    @if( pors.id == product.pors )
+                                                                        <option value="{{ pors.id }}" selected="selected">{{ pors.category_name }}</option>
+                                                                    @elseif( pors.id == old('pors'))
+                                                                        <option value="{{ pors.id }}" selected="selected">{{ pors.category_name }}</option>
+                                                                    @else
+                                                                        <option value="{{ pors.id }}">{{ pors.category_name }}</option> 
+                                                                    @endif
+                                                                @endeach
+                                                            </select>
+                                                            {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('pors'), hasErrorFor('pors')) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                       <!-- Group --> 
+                                                <div class="form-row">
+                                                    <div class="col-md-4">                            
+                                                        <div class="form-group">
+                                                            <label for="group">{{ antl.formatMessage('products.group') }}</label>
+                                                            <select class="form-control rounded-0 {{ elIf('is-invalid',getErrorFor('group'), hasErrorFor('group')) }}" id="group" name="group" required>
+                                                                <option value="empty" selected disabled>{{ antl.formatMessage('products.select')}}</option>
+                                                                @if(product.id)
+                                                                    @each( group in groups )
+                                                                        @if( group.id == product.group )
+                                                                            <option value="{{ group.id }}" selected="selected">{{ group.category_name }}</option>
+                                                                        @else
+                                                                            <option value="{{ group.id }}">{{ group.category_name }}</option> 
+                                                                        @endif
+                                                                    @endeach
+                                                                @elseif(old('group'))
+                                                                    <option value="{{ old('group') }}" selected="selected"></option>
+                                                                @endif  
+                                                            </select>
+                                                            {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('group'), hasErrorFor('group')) }}
+                                                        </div>
+                                                    </div>
+                                        <!-- CATEGORY -->
+                                                    <div class="col-md-4">                            
+                                                        <div class="form-group">
+                                                            <label for="group">{{ antl.formatMessage('products.category') }}</label>
+                                                            <select class="form-control rounded-0 {{ elIf('is-invalid',getErrorFor('category'), hasErrorFor('category')) }}" id="category" name="category" required>
+                                                                <option value="empty" selected disabled>{{ antl.formatMessage('products.select')}}</option>
+                                                                @if(product.id)
+                                                                    @each( category in categories )
+                                                                        @if( category.id == product.category )
+                                                                            <option value="{{ category.id }}" selected="selected">{{ category.category_name }}</option>
+                                                                        @else
+                                                                            <option value="{{ category.id }}">{{ category.category_name }}</option> 
+                                                                        @endif
+                                                                    @endeach
+                                                                @elseif(old('category'))
+                                                                    <option value="{{ old('category') }}" selected="selected"></option>
+                                                                @endif  
+                                                            </select>
+                                                            {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('category'), hasErrorFor('category')) }}
+                                                        </div>
+                                                    </div>
+                                        <!-- SUB CATEGORY -->
+                                                    <div class="col-md-4">                            
+                                                        <div class="form-group">
+                                                            <label for="group">{{ antl.formatMessage('products.sub_category') }}</label>
+                                                            <select class="form-control rounded-0 {{ elIf('is-invalid',getErrorFor('sub_category'), hasErrorFor('sub_category')) }}" id="sub_category" name="sub_category" required>
+                                                                <option value="empty" selected disabled>{{ antl.formatMessage('products.select')}}</option>
+                                                                @if(product.id)
+                                                                    @each( sub_category in sub_categories )
+                                                                        @if( sub_category.id == product.sub_category )
+                                                                            <option value="{{ sub_category.id }}" selected="selected">{{ sub_category.category_name }}</option>
+                                                                        @else
+                                                                            <option value="{{ sub_category.id }}">{{ sub_category.category_name }}</option> 
+                                                                        @endif
+                                                                    @endeach
+                                                                @elseif(old('sub_category'))
+                                                                    <option value="{{ old('sub_category') }}" selected="selected"></option>
+                                                                @endif  
+                                                            </select>
+                                                            {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('sub_category'), hasErrorFor('sub_category')) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                        <!-- Title --> 
+                                                <div class="form-row">
+                                                    <div class="col-md-12">                            
+                                                        <div class="form-group">
+                                                            <label for="title">{{ antl.formatMessage('products.title') }}</label>
+                                                            <input type="text" name="title" id="title"
+                                                                    class="form-control form-control rounded-0 {{ elIf('is-invalid',getErrorFor('title'), hasErrorFor('title')) }}" 
+                                                                    value="{{ old('title', !product.title? '':product.title ) }}"  
+                                                                    placeholder="{{ antl.formatMessage('products.pltitle') }}" required/>
+                                                                    {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('title'), hasErrorFor('title')) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                        <!-- Sub Title -->
+                                                <div class="form-row">
+                                                    <div class="col-md-12">                            
+                                                        <div class="form-group">
+                                                            <label for="sub_title">{{ antl.formatMessage('products.sub_title') }}</label>
+                                                            <input type="text" name="sub_title" id="sub_title"
+                                                                    class="form-control form-control rounded-0 {{ elIf('is-invalid',getErrorFor('sub_title'), hasErrorFor('sub_title')) }}" 
+                                                                    value="{{ old('sub_title', !product.sub_title? '':product.sub_title ) }}"  
+                                                                    placeholder="{{ antl.formatMessage('products.plsub_title') }}" required/>
+                                                                    {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('sub_title'), hasErrorFor('sub_title')) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                        <!-- Description -->
+                                                <div class="form-row">
+                                                    <div class="col-md-12">                            
+                                                        <div class="form-group">
+                                                            <label for="description">{{ antl.formatMessage('products.description') }}</label>
+                                                             <textarea type="text" rows="5" id="description" name="description" 
+                                                                class="form-control form-control rounded-0 {{ elIf('is-invalid',getErrorFor('description'), hasErrorFor('description')) }}">{{ old('description', !product.description? '':product.description ) }}</textarea> 
+                                                            {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('description'), hasErrorFor('description')) }}  
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                        <!-- Countrys -->
+                                                <h5>
+                                                    <i class="fas fa-globe fa-lg"></i>
+                                                    {{ antl.formatMessage('products.base_countrys') }}
+                                                </h5>
+                                                <div class="pretty p-switch">
+                                                    <input class="form-check-input" type="checkbox" name="rent_belgium" id="rent_belgium" {{ !product.rent_belgium? '':'checked' }}  {{ !old('rent_belgium')? '':'checked' }}>
+                                                    <div class="state">
+                                                        <label class="form-check-label">{{ antl.formatMessage('products.active_belgium') }}</label>
+                                                    </div>
+                                                </div>            
+                                                <div class="pretty p-switch">
+                                                    <input class="form-check-input" type="checkbox" name="rent_netherlands" id="rent_netherlands" {{ !product.rent_netherlands? '':'checked' }}  {{ !old('rent_netherlands')? '':'checked' }}>
+                                                    <div class="state">
+                                                        <label class="form-check-label">{{ antl.formatMessage('products.active_netherlands') }}</label>
+                                                    </div>
+                                                </div>      
+                                            </div>
+                        <!-- PRICES TAB CONTENT -->
+                                            <div class="tab-pane container" id="tab-2">
+                                    <!-- TITLE - Prices -->
+                                                <h5>
+                                                    <i class="fas fa-euro-sign fa-lg"></i>
+                                                    {{ antl.formatMessage('products.price_info') }}
+                                                </h5>
+                                                <div class="form-row">
+                                                    <div class="col-md-3"> 
+                                                        <div class="form-group">
+                                                            <label for="price_hour">{{ antl.formatMessage('products.price_hour') }}</label>
+                                                            <input type="number" min="0" step="0.5" name="price_hour" id="price_hour" style="text-align:right;"
+                                                                    class="price-group form-control form-control rounded-0 {{ elIf('is-invalid',getErrorFor('price_hour'), hasErrorFor('price_hour')) }}" 
+                                                                    value="{{ old('price_hour', !product.price_hour? '' : product.price_hour ) }}"/> 
+                                                                    {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('price_hour'), hasErrorFor('price_hour')) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3"> 
+                                                        <div class="form-group">
+                                                            <label for="price_day">{{ antl.formatMessage('products.price_day') }}</label>
+                                                            <input type="number" min="0" step="0.5" name="price_day" id="price_day" style="text-align:right;"
+                                                                    class="price-group form-control form-control rounded-0 {{ elIf('is-invalid',getErrorFor('price_day'), hasErrorFor('price_day')) }}" 
+                                                                    value="{{ old('price_day', !product.price_day? '':product.price_day ) }}"/> 
+                                                                    {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('price_day'), hasErrorFor('price_day')) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3"> 
+                                                        <div class="form-group">
+                                                            <label for="price_week">{{ antl.formatMessage('products.price_week') }}</label>
+                                                            <input type="number" min="0" step="0.5" name="price_week" id="price_week" style="text-align:right;"
+                                                                    class="price-group form-control form-control rounded-0 {{ elIf('is-invalid',getErrorFor('price_week'), hasErrorFor('price_week')) }}" 
+                                                                    value="{{ old('price_week', !product.price_week? '':product.price_week ) }}"/> 
+                                                                    {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('price_week'), hasErrorFor('price_week')) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3"> 
+                                                        <div class="form-group">
+                                                            <label for="price_month">{{ antl.formatMessage('products.price_month') }}</label>
+                                                            <input type="number" min="0" step="0.5" name="price_month" id="price_month" style="text-align:right;"
+                                                                    class="price-group form-control form-control rounded-0 {{ elIf('is-invalid',getErrorFor('price_month'), hasErrorFor('price_month')) }}" 
+                                                                    value="{{ old('price_month', !product.price_month? '':product.price_month ) }}"/> 
+                                                                    {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('price_month'), hasErrorFor('price_month')) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <h5>
+                                                    <i class="fas fa-exclamation-circle fa-lg"></i>
+                                                    {{ antl.formatMessage('products.warranty_info') }}
+                                                </h5>
+                                                &nbsp
+                                <!-- Waranty checkbox -->
+                                                <div class="form-row">
+                                                    <div class="pretty p-switch">
+                                                        <input class="form-check-input" type="checkbox" name="is_warranty" id="is_warranty" {{ !old('is_warranty')? '' : 'checked' }} {{ !product.is_warranty? '':'checked' }}>
+                                                        <div class="state">
+                                                            <label class="form-check-label">{{ antl.formatMessage('products.is_warranty') }}</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                &nbsp
+                                <!-- warranty amount -->
+                                                <div class="form-row">
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label for="warranty_amount">{{ antl.formatMessage('products.warranty_amount') }}</label>
+                                                            <input type="number" min="0" step="0.5" name="warranty_amount" id="warranty_amount" style="text-align:right;"
+                                                                    class="form-control form-control rounded-0 {{ elIf('is-invalid',getErrorFor('warranty_amount'), hasErrorFor('warranty_amount')) }}" 
+                                                                    value="{{ old('warranty_amount', !product.warranty_amount? '':product.warranty_amount ) }}"/> 
+                                                                    {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('warranty_amount'), hasErrorFor('warranty_amount')) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                    <!-- Warranty Description -->
+                                                <div class="form-row">
+                                                    <div class="col-md-12">                            
+                                                        <div class="form-group">
+                                                            <label for="warranty_description">{{ antl.formatMessage('products.warranty_description') }}</label>
+                                                             <textarea type="text" rows="5" id="warranty_description" name="warranty_description" 
+                                                                class="form-control form-control rounded-0 {{ elIf('is-invalid',getErrorFor('warranty_description'), hasErrorFor('warranty_description')) }}">{{ old('warranty_description', !product.warranty_description? '':product.warranty_description ) }}</textarea>  
+                                                            {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('warranty_description'), hasErrorFor('warranty_description')) }} 
+                                                        </div>
+                                                    </div>
+                                                </div> 
+                                    <!-- Home delivery -->
+                                                <h5>
+                                                    <i class="fas fa-truck fa-lg"></i>
+                                                    {{ antl.formatMessage('products.home_delivery') }}
+                                                </h5>
+                                                &nbsp
+                                                <div class="form-row">
+                                                    <div class="pretty p-switch">
+                                                        <input class="form-check-input" type="checkbox" name="is_home_delivery" id="is_home_delivery" {{ !old('is_home_delivery')? '':'checked' }} {{!product.is_home_delivery? '':'checked'}}>
+                                                        <div class="state">
+                                                            <label class="form-check-label">{{ antl.formatMessage('products.is_home_delivery') }}</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                &nbsp
+                                    <!-- Delivery Amount -->
+                                                <div class="form-row">
+                                                    <div class="col-md-3"> 
+                                                        <div class="form-group">
+                                                            <label for="home_delivery_amount">{{ antl.formatMessage('products.home_delivery_amount') }}</label>
+                                                            <input type="number" min="0" step="0.5" name="home_delivery_amount" id="home_delivery_amount" style="text-align:right;"
+                                                                    class="form-control form-control rounded-0 {{ elIf('is-invalid',getErrorFor('home_delivery_amount'), hasErrorFor('home_delivery_amount')) }}" 
+                                                                    value="{{ old('home_delivery_amount', !product.home_delivery_amount? '':product.home_delivery_amount ) }}"/> 
+                                                                    {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('home_delivery_amount'), hasErrorFor('home_delivery_amount')) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                    <!--Delivery  Description -->
+                                                <div class="form-row">
+                                                    <div class="col-md-12">                            
+                                                        <div class="form-group">
+                                                            <label for="home_delivery_description">{{ antl.formatMessage('products.home_delivery_description') }}</label>
+                                                            <textarea type="text" rows="5" id="home_delivery_description" name="home_delivery_description" 
+                                                                class="form-control form-control rounded-0 {{ elIf('is-invalid',getErrorFor('home_delivery_description'), hasErrorFor('home_delivery_description')) }}">{{ old('home_delivery_description', !product.home_delivery_description? '':product.home_delivery_description ) }}</textarea>   
+                                                            {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('home_delivery_description'), hasErrorFor('home_delivery_description')) }} 
+                                                        </div>
+                                                    </div>
+                                                </div> 
+                                            </div>   <!-- Close tab-2 -->
+                                            <div class="tab-pane container" id="tab-3">
+                    <!-- TITLE - Availability -->
+                                                <h5>
+                                                    <i class="fas fa-calendar-alt fa-lg"></i>
+                                                    {{ antl.formatMessage('products.availability_info') }}
+                                                </h5>
+                                                &nbsp
+                                                <div class="form-row">
+                                                    <div class="col-md-4 offset-md-4">
+                                                        <div class="pretty p-switch">
+                                                            <input class="form-check-input" type="checkbox" name="available_mo" id="available_mo" {{ !old('available_mo')? '' : 'checked' }} {{!product.available_mo? '':'checked'}}>
+                                                            <div class="state">
+                                                                <label class="form-check-label">{{ antl.formatMessage('products.available_mo') }}</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                &nbsp
+                                                <div class="form-row">
+                                                    <div class="col-md-4 offset-md-4">
+                                                        <div class="pretty p-switch">
+                                                            <input class="form-check-input" type="checkbox" name="available_tue" id="available_tue" {{ !old('available_tue')? '' : 'checked' }} {{!product.available_tue? '':'checked'}}>
+                                                            <div class="state">
+                                                                <label class="form-check-label">{{ antl.formatMessage('products.available_tue') }}</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                &nbsp
+                                                <div class="form-row">
+                                                    <div class="col-md-4 offset-md-4">
+                                                        <div class="pretty p-switch">
+                                                            <input class="form-check-input" type="checkbox" name="available_wed" id="available_wed" {{ !old('available_wed')? '' : 'checked' }} {{!product.available_wed? '':'checked'}}>
+                                                            <div class="state">
+                                                                <label class="form-check-label">{{ antl.formatMessage('products.available_wed') }}</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                &nbsp
+                                                <div class="form-row">
+                                                    <div class="col-md-4 offset-md-4">
+                                                        <div class="pretty p-switch">
+                                                            <input class="form-check-input" type="checkbox" name="available_th" id="available_th" {{ !old('available_th')? '' : 'checked' }} {{!product.available_th? '':'checked'}}>
+                                                            <div class="state">
+                                                                <label class="form-check-label">{{ antl.formatMessage('products.available_th') }}</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                &nbsp
+                                                <div class="form-row">
+                                                    <div class="col-md-4 offset-md-4">
+                                                        <div class="pretty p-switch">
+                                                            <input class="form-check-input" type="checkbox" name="available_fr" id="available_fr" {{ !old('available_fr')? '' : 'checked' }} {{!product.available_fr? '':'checked'}}>
+                                                            <div class="state">
+                                                                <label class="form-check-label">{{ antl.formatMessage('products.available_fr') }}</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                &nbsp
+                                                <div class="form-row">
+                                                    <div class="col-md-4 offset-md-4">
+                                                        <div class="pretty p-switch">
+                                                            <input class="form-check-input" type="checkbox" name="available_sat" id="available_sat" {{ !old('available_sat')? '' : 'checked' }} {{!product.available_sat? '':'checked'}}>
+                                                            <div class="state">
+                                                                <label class="form-check-label">{{ antl.formatMessage('products.available_sat') }}</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                 &nbsp
+                                                <div class="form-row">
+                                                    <div class="col-md-4 offset-md-4">
+                                                        <div class="pretty p-switch">
+                                                            <input class="form-check-input" type="checkbox" name="available_sun" id="available_sun" {{ !old('available_sun')? '' : 'checked' }} {{!product.available_sun? '':'checked'}}>
+                                                            <div class="state">
+                                                                <label class="form-check-label">{{ antl.formatMessage('products.available_sun') }}</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>  
+                                            </div>
+                    <!-- TAB : PICTURES ----------------------- -->
+                                            <div class="tab-pane container" id="tab-4">
+                                            <h5>
+                                                 <i class="fas fa-camera-retro fa-lg"></i>
+                                                {{ antl.formatMessage('products.picture_info') }}
+                                            </h5>
+                                            &nbsp
+                            <!-- Picture 1  input--> 
+                                                <div class="form-row">
+                                                    <div class="col-md-4">                            
+                                                        <div class="form-group">
+                                                            <input type="file" id="picture_1" name="picture_1"
+                                                                class="dropify" 
+                                                                data-max-file-size="1M" 
+                                                                data-allowed-file-extensions="gif jpg jpeg png"     
+                                                                data-default-file="{{ old('picture_1', !product.picture_1? "" : product.picture_1) }}"/>        
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">                            
+                                                        <div class="form-group">
+                                                            <input type="file" id="picture_2" name="picture_2"
+                                                                class="dropify" 
+                                                                data-max-file-size="1M" 
+                                                                data-allowed-file-extensions="gif jpg jpeg png"                                               
+                                                                data-default-file="{{ old('picture_2', !product.picture_2? "" : product.picture_2) }}"/>        
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">                            
+                                                        <div class="form-group">
+                                                            <input type="file" id="picture_3" name="picture_3"
+                                                                class="dropify" 
+                                                                data-max-file-size="1M" 
+                                                                data-allowed-file-extensions="gif jpg jpeg png"                                   
+                                                                data-default-file="{{ old('picture_3', !product.picture_3? "" : product.picture_3) }}"/>        
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-row">
+                                                    <div class="col-md-4">                            
+                                                        <div class="form-group">
+                                                            <input type="file" id="picture_4" name="picture_4"
+                                                                class="dropify" 
+                                                                data-max-file-size="1M" 
+                                                                data-allowed-file-extensions="gif jpg jpeg png"                         
+                                                                data-default-file="{{ old('picture_4', !product.picture_4? "" : product.picture_4) }}"/>        
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">                            
+                                                        <div class="form-group">
+                                                            <input type="file" id="picture_5" name="picture_5"
+                                                                class="dropify" 
+                                                                data-max-file-size="1M" 
+                                                                data-allowed-file-extensions="gif jpg jpeg png"                                   
+                                                                data-default-file="{{ old('picture_5', !product.picture_5? "" : product.picture_5) }}"/>        
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">                            
+                                                        <div class="form-group">
+                                                            <input type="file" id="picture_6" name="picture_6"
+                                                                class="dropify" 
+                                                                data-max-file-size="1M" 
+                                                                data-allowed-file-extensions="gif jpg jpeg png"                                      
+                                                                data-default-file="{{ old('picture_6', !product.picture_6? "" : product.picture_6) }}"/>        
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr>  
+                                        @if(product.id)
+                                            <button type="button" onclick="window.location.href='/my-product/delete/{{product.id}}'" class="btn btn-danger btn float-left mr-2" id="btnDelete">{{ antl.formatMessage('messages.delete') }}</button>
+                                        @endif
+                                        <button type="submit" class="btn btn-success btn float-right " id="btnSubmit">{{ antl.formatMessage('messages.confirm') }}</button>                                    
+                                        <button type="button" onclick="window.location.href='/my-products'" class="btn btn-primary btn float-right mr-2" id="btnBack">{{ antl.formatMessage('messages.back') }}</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                     </div>
+                </div>
+            </div>
+        </div>
+    </main>
+@endsection
+
+@section('scripts')
+    <script src="/add-ons/dropify/dist/js/dropify.min.js"></script>
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready( function () {
+
+    // Initialize Dropify 
+            $('.dropify').dropify({
+                messages: {
+                    'default': "{{antl.formatMessage('messages.drag_drop')}}",
+                    'replace': "{{antl.formatMessage('messages.drag_drop_replace')}}",
+                    'remove':  "{{antl.formatMessage('messages.remove')}}",
+                    'error':   "{{antl.formatMessage('messages.oops')}}"
+                }
+            });
+
+    //(RW) Enable / Disable category selects when Parent empty / Not empty
+
+    // CHECK ON INIT
+            var loanOrRent = $('#loan_or_rent option:selected').val();   
+            var pors = $('#pors option:selected').val();
+            var group = $('#group option:selected').val();
+            var category = $('#category option:selected').val();
+            var subCategory = $('#sub_category option:selected').val();
+            var isWarranty = $('#is_warranty').is(':checked'); 
+            var isDelivery = $('#is_home_delivery').is(':checked'); 
+        
+        // Disable an clear Warranty Fields if switch is off 
+            if (!isWarranty){
+                $('#warranty_amount').val('');
+                $("#warranty_amount").prop('disabled', 'disabled');
+                $('#warranty_description').val('');
+                $("#warranty_description").prop('disabled', 'disabled');   
+            }
+
+        // Disable an clear Delivery Fields if switch is off 
+            if (!isDelivery == 1){
+                $('#home_delivery_amount').val('');
+                $("#home_delivery_amount").prop('disabled', 'disabled');
+                $('#home_delivery_description').val('');
+                $("#home_delivery_description").prop('disabled', 'disabled');   
+            }
+          
+
+        // Disable price fields if loan 
+            if (loanOrRent == 1){
+                $(".price-group").prop('disabled', true); 
+                var loanText = "{{antl.formatMessage('products.loantext1')}} {{parameter.loan_cost}} {{antl.formatMessage('products.loantext2')}}";
+                $('#loan_text').html(loanText);   
+            }
+
+        // Get groups when EDIT products on open form
+            if (pors !== "empty") {
+                $("#group").prop('disabled', false);
+                $("#category").prop('disabled', 'disabled');
+                $.ajax({
+                    url:'/my-products/get-group/' + pors,
+                    method:"get",
+                    dataType: "json",
+                    success:function(data){
+                        $('#group').empty();
+                        $('#group').append('<option value="empty" selected disabled>{{ antl.formatMessage("products.select") }}</option>');
+                        $.each(data, function(index, groupObj){
+                            if(groupObj.id == group){
+                                $('#group').append('<option value="'+ groupObj.id +'" selected="selected">'+ groupObj.category_name +'</option>');
+                            }else{
+                                 $('#group').append('<option value="'+ groupObj.id +'">'+ groupObj.category_name +'</option>');
+                            }  
+                        })
+                    }
+                });
+               
+            } else { 
+                $('#group').empty();        
+                $("#group").prop('disabled', 'disabled');               
+            }
+
+            if (group !== "empty") {
+                $("#category").prop('disabled', false);
+                $.ajax({
+                    url:'/my-products/get-group/' + group,
+                    method:"get",
+                    dataType: "json",
+                    success:function(data){
+                        $('#category').empty();
+                        $('#category').append('<option value="empty" selected disabled>{{ antl.formatMessage("products.select") }}</option>');
+                        $.each(data, function(index, groupObj){
+                            if(groupObj.id == category){
+                                $('#category').append('<option value="'+ groupObj.id +'" selected="selected">'+ groupObj.category_name +'</option>');
+                            }else{
+                                $('#category').append('<option value="'+ groupObj.id +'">'+ groupObj.category_name +'</option>');
+                            }
+                        })
+
+                    }
+                });
+
+            } else {
+                $('#category').empty();
+                $("#category").prop('disabled', 'disabled');        
+            }
+
+            if (category !== "empty") {
+                $("#sub_category").prop('disabled', false);
+                $.ajax({
+                    url:'/my-products/get-group/' + category,
+                    method:"get",
+                    dataType: "json",
+                    success:function(data){
+                        $('#sub_category').empty();
+                        $('#sub_category').append('<option value="empty" selected disabled>{{antl.formatMessage("products.select")}}</option>');
+                        $.each(data, function(index, groupObj){
+                            if(groupObj.id == subCategory){
+                                $('#sub_category').append('<option value="'+ groupObj.id +'" selected="selected">'+ groupObj.category_name +'</option>');
+                            }else{
+                                $('#sub_category').append('<option value="'+ groupObj.id +'">'+ groupObj.category_name +'</option>');
+                            }
+                        })
+
+                    }
+                });
+            } else { 
+                $('#sub_category').empty();
+                $("#sub_category").prop('disabled', 'disabled');        
+            }
+
+
+    // CHECK ON CHANGE LOAN OR RENT (LOAN OR RENT)
+            $("#loan_or_rent").on('change', function() {
+                var loanOrRent = $('#loan_or_rent option:selected').val();
+                if(loanOrRent == 0){
+                    $(".price-group").prop('disabled', false);
+                    var loanOrRent = $('#loan_or_rent option:selected').val();
+                    var loanText = "";
+                    $('#loan_text').html(loanText);
+                } else {
+                    $(".price-group").prop('disabled', true);
+                    var loanOrRent = $('#loan_or_rent option:selected').val(); 
+                    var loanText = "{{antl.formatMessage('products.loantext1')}} {{parameter.loan_cost}} {{antl.formatMessage('products.loantext2')}}";
+                    $('#loan_text').html(loanText);                   
+                }
+            });
+
+    // CHECK ON CHANGE PRODUCT OR SERVICE (PORS)
+            $("#pors").on('change', function() {
+                var pors = $("#pors option:selected").val();
+                if (pors !== "empty") {
+                    $.ajax({
+                        url:'/my-products/get-group/' + pors,
+                      //  headers: {'X-CSRF-Token': $("input[name=_csrf]").val()},  (only for POST request)
+                        method:"get",
+                        dataType: "json",
+                        success:function(data){
+                            $('#group').empty();
+                            $('#group').append('<option value="empty" selected disabled>{{antl.formatMessage("products.select")}}</option>');
+                            $.each(data, function(index, groupObj){
+                                $('#group').append('<option value="'+ groupObj.id +'">'+ groupObj.category_name +'</option>');
+                            })
+                        }
+                    });
+                    $("#group").prop('disabled', false); 
+                    $('#category').empty();
+                    $("#category").prop('disabled', 'disabled');    
+                    $('#sub_category').empty();
+                    $("#sub_category").prop('disabled', 'disabled');  
+                } else {   
+                    $('#group').empty();  
+                    $("#group").prop('disabled', 'disabled');        
+                }
+            });
+
+    // CHECK ON CHANGE GROUP 
+            $("#group").on('change', function() {
+                var group = $("#group option:selected").val();
+                if (group !== "empty") {
+                    $.ajax({
+                        url:'/my-products/get-group/' + group,
+                        method:"get",
+                        dataType: "json",
+                        success:function(data){
+                            $('#category').empty();
+                            $('#category').append('<option value="empty" selected disabled>{{antl.formatMessage("products.select")}}</option>');
+                            $.each(data, function(index, groupObj){
+                                $('#category').append('<option value="'+ groupObj.id +'">'+ groupObj.category_name +'</option>');
+                            })
+
+                        }
+                    });
+                    $("#category").prop('disabled', false);
+                    $('#sub_category').empty();
+                    $("#sub_category").prop('disabled', 'disabled');       
+                } else {  
+                    $('#category').empty();   
+                    $("#category").prop('disabled', 'disabled');        
+                }
+            });
+
+    // CHECK ON CHANGE CATEGORY 
+            $("#category").on('change', function() {
+                var category = $("#category option:selected").val();
+                if (category !== "empty") {
+                    $.ajax({
+                        url:'/my-products/get-group/' + category,
+                        method:"get",
+                        dataType: "json",
+                        success:function(data){
+                            $('#sub_category').empty();
+                            $('#sub_category').append('<option value="empty" selected disabled>{{antl.formatMessage("products.select")}}</option>');
+                            $.each(data, function(index, groupObj){
+                                $('#sub_category').append('<option value="'+ groupObj.id +'">'+ groupObj.category_name +'</option>');
+                            })
+
+                        }
+                    });
+                    $("#sub_category").prop('disabled', false);      
+                } else { 
+                    $('#sub_category').empty();    
+                    $("#sub_category").prop('disabled', 'disabled');        
+                }
+            });
+
+    // Check on Change Warranty        
+            $('#is_warranty').on('change', function() {
+                if($(this).prop('checked')){
+                    $("#warranty_amount").prop('disabled', false);
+                    $("#warranty_description").prop('disabled', false);
+                }else{
+                    $("#is_warranty").prop('checked', false);
+                    $('#warranty_amount').val('');
+                    $("#warranty_amount").prop('disabled', 'disabled');
+                    $('#warranty_description').val('');
+                    $("#warranty_description").prop('disabled', 'disabled');
+                }
+            })
+
+    // Check on change Home Delivery 
+            $('#is_home_delivery').on('change', function() {
+                if($(this).prop('checked')){
+                    $("#home_delivery_amount").prop('disabled', false);
+                    $("#home_delivery_description").prop('disabled', false);
+                }else{
+                    $("#is_home_delivery").prop('checked',false);
+                    $('#home_delivery_amount').val('');
+                    $("#home_delivery_amount").prop('disabled', 'disabled');
+                    $('#home_delivery_description').val('');
+                    $("#home_delivery_description").prop('disabled', 'disabled');
+                }
+            })
+        });  
+    </script>
+@endsection
+
+
+
+   

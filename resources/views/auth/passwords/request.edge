@@ -1,0 +1,46 @@
+@layout('layouts.app')
+@section('content')
+    <main role="main">
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-6 mx-auto">
+                            <!-- form card login -->
+                            <div class="card rounded-0">
+                                <div class="card-header">
+                                    <h3 class="mb-0">{{ antl.formatMessage('messages.resetPassword') }}</h3>
+                                </div>
+                                <div class="card-body">
+
+                                    @include('partials.notification')
+
+                                    <form id="formLogin" class="form" role="form" novalidate autocomplete="off" method="POST" action="/password/email">
+                                    {{ csrfField() }} 
+                        <!-- EMAIL -->                                       
+                                        <div class="form-group">
+                                            <label for="email">{{ antl.formatMessage('messages.email') }}</label>
+                                            <input type="email" name="email" id="email"
+                                                    class="form-control form-control-lg rounded-0 {{ elIf('is-invalid',getErrorFor('email'), hasErrorFor('email')) }}" 
+                                                    value="{{ old('email','') }}"  
+                                                    placeholder="example@example.com" required />
+                                            {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('email'), hasErrorFor('email')) }}
+                                        </div>
+                            
+                                        <button type="submit" class="btn btn-success btn-lg float-right" id="btnLogin">{{ antl.formatMessage('messages.resetLink') }}</button>
+                                    </form>
+                                </div>
+                                <!--/card-block-->
+                            </div>
+                            <!-- /form card login -->
+                        </div>
+                    </div>
+                    <!--/row-->
+                </div>
+                <!--/col-->
+            </div>
+            <!--/row-->
+        </div>
+        <!--/container-->
+    </main>
+@endsection

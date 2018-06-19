@@ -1,0 +1,100 @@
+@layout('layouts.app')
+
+@section('styles')
+@endsection
+
+@section('content')
+        <main role="main">
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-12 mx-auto">
+                            <div class="card rounded-0">
+                                <div class="card-header">
+                                    @if(!message.id) 
+                                        <h3 class="mb-0">
+                                            <i class="fas fa-envelope fa-lg"></i>
+                                            {{ antl.formatMessage('mail.send_message') }}
+                                        </h3>
+                                    @else
+                                        <h3 class="mb-0">
+                                            <i class="fas fa-envelope fa-lg"></i>
+                                            {{ antl.formatMessage('mail.view_message') }}
+                                        </h3>
+                                    @endif
+                                </div>
+                                <div class="card-body">    
+                                    @include('partials.notification')
+                                    <form id="formMessage" class="form" role="form" novalidate autocomplete="off" method="POST" action="/message/send/{{ message.receiver_id }}/{{ message.product_id }}/0"  enctype="multipart/form-data">
+                                    {{ csrfField() }}
+                    <!--    <input type="hidden" id="price_hour" name="price_hour" value="{{ field}}"/> -->
+
+                                        <div class="form-group col-lg-12">
+                                            <dl>
+                                                <dt>{{ antl.formatMessage('mail.fromto') }}</dt>
+                                                <dd>
+                                                    {{ antl.formatMessage('mail.from') }} 
+                                                    @if(message.owner_id === message.sender_id)
+                                                        {{ antl.formatMessage('mail.me') }} 
+                                                    @else
+                                                        {{ message.sender_name }}
+                                                    @endif
+                                                    {{ antl.formatMessage('mail.to') }} 
+                                                    @if(message.owner_id === message.receiver_id)
+                                                        {{ antl.formatMessage('mail.me') }} 
+                                                    @else
+                                                        {{ message.receiver_name }}
+                                                    @endif
+                                                </dd>
+                                            </dl>
+                                            <dl>
+                                                <dt>{{ antl.formatMessage('mail.message_title') }}</dt>
+                                                <dd>{{ message.message_title}}</dd>
+                                            </dl>
+                                            <dl>
+                                                <dt>{{ antl.formatMessage('mail.date') }}</dt>
+                                                <dd>{{ message.created_at}}</dd>
+                                            </dl>
+                                            <div class="form-row">
+                                                <div class="col-md-12">                            
+                                                    <div class="form-group">
+                                                        <dt><label for="message_text">{{ antl.formatMessage('mail.text_label') }}</label></dt>
+                                                            <textarea type="text" rows="6" id="message_text" name="message_text" class="form-control form-control rounded-0 {{ elIf('is-invalid',getErrorFor('message_text'), hasErrorFor('message_text')) }}" {{ message.id? 'disabled' : ''}}>{{ old('message_text', !message.message_text? '':message.message_text ) }}</textarea> 
+                                                        {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('message_text'), hasErrorFor('message_text')) }}  
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                  
+                                        <hr>  
+                                        {{message.chain_id}}
+                                        @if(!message.id)         
+                                            <button type="submit" class="btn btn-success btn float-right " id="btnSubmit">{{ antl.formatMessage('mail.send') }}</button>   
+                                        @endif
+                                        @if(message.id && user.id === message.receiver_id)
+                                            <button type="button" onclick="window.location.href='/message/create/{{ message.sender_id }}/{{ message.product_id }}/{{message.chain_id}}'" class="btn btn-success btn float-right " id="btnRequest">{{ antl.formatMessage('mail.request') }}</button>   
+                                        @endif                                 
+                                        <button type="button" onclick="window.location.href='javascript:history.back()'" class="btn btn-primary btn float-right mr-2" id="btnBack">{{ antl.formatMessage('messages.back') }}</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+@endsection
+
+
+@section('scripts')
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready( function () {
+
+            });
+
+
+    </script>
+@endsection
+

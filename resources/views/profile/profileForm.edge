@@ -1,0 +1,438 @@
+
+@layout('layouts.app')
+
+@section('styles')
+     <link href="/add-ons/dropify/dist/css/dropify.min.css" rel="stylesheet">
+@endsection
+
+@section('content')
+    <main role="main">
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-12 mx-auto">
+                        <!-- form card Profile -->
+                            <div class="card rounded-0">
+                                <div class="card-header">
+                                    <h3 class="mb-0">
+                                        <i class="fas fa-user-circle fa-lg"></i>
+                                        {{ antl.formatMessage('messages.profile') }} {{!profile.first_name? 'NIET' : 'WEL' }}</h3>
+                                </div>
+                                <div class="card-body">
+                                    {{ geo }}
+                                    @include('partials.notification')
+                                    <form id="formProfile" class="form" role="form" novalidate autocomplete="off" method="POST" action="{{ route('profile')}}"  enctype="multipart/form-data">
+                                        {{ csrfField() }}
+                            <!-- TAB NAVIGATION -->
+                                <!-- Nav tabs -->
+                                        <h5>
+                                        <ul class="nav nav-tabs">
+                                            <li class="nav-item">
+                                                <a class="nav-link active" data-toggle="tab" href="#tab-1">
+                                                    <i class="fas fa-user"></i>
+                                                    <i class="notsmscr">{{ antl.formatMessage('messages.profile2') }}</i>
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" data-toggle="tab" href="#tab-2">
+                                                    <i class="fas fa-camera-retro"></i>
+                                                    <i class="notsmscr"> {{ antl.formatMessage('messages.picture') }}</i>
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" data-toggle="tab" href="#tab-3">
+                                                    <i class="fas fa-user-check"></i>
+                                                    <i class="notsmscr">{{ antl.formatMessage('messages.user') }}</i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                        </h5>
+                                        &nbsp
+                                <!-- Tab panes -->
+                                        <div class="tab-content">
+                                    <!-- PROFILE TAB CONTENT -->
+                                            <div class="tab-pane active container" id="tab-1">
+                                    <!-- TITLE - PROFILE -->
+                                                <h5>
+                                                    <i class="fas fa-user"></i>
+                                                    {{ antl.formatMessage('messages.personal_info') }}
+                                                </h5>
+                                        <!-- FIRSTNAME--> 
+                                                <div class="form-row">
+                                                    <div class="col-md-6">                            
+                                                        <div class="form-group">
+                                                            <label for="first_name">{{ antl.formatMessage('messages.first_name') }}</label>
+                                                            <input type="text" name="first_name" id="first_name"
+                                                                    class="form-control form-control rounded-0 {{ elIf('is-invalid',getErrorFor('first_name'), hasErrorFor('first_name')) }}" 
+                                                                    value="{{ old('first_name', !profile.first_name? '':profile.first_name ) }}"  
+                                                                    placeholder="{{ antl.formatMessage('messages.plfirst_name') }}" required/>
+                                                                    {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('first_name'), hasErrorFor('first_name')) }}
+                                                        </div>
+                                                    </div>
+                                            <!-- LAST NAME  -->    
+                                                    <div class="col-md-6">                                     
+                                                        <div class="form-group">
+                                                            <label for="last_name">{{ antl.formatMessage('messages.last_name') }}</label>
+                                                            <input type="text" name="last_name" id="last_name" 
+                                                            class="form-control form-control rounded-0 {{ elIf('is-invalid',getErrorFor('last_name'), hasErrorFor('last_name')) }}" 
+                                                            value="{{ old('last_name', !profile.last_name? '':profile.last_name) }}"  
+                                                            placeholder="{{ antl.formatMessage('messages.pllast_name') }}" required/>
+                                                            {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('last_name'), hasErrorFor('last_name')) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                             <!-- Nationality--> 
+                                                <div class="form-row">
+                                                    <div class="col-md-3">                            
+                                                        <div class="form-group">
+                                                            <label for="nationality">{{ antl.formatMessage('messages.nationality') }}</label>
+                                                            <input type="text" name="nationality" id="nationality"
+                                                                    class="form-control form-control rounded-0 {{ elIf('is-invalid',getErrorFor('nationality'), hasErrorFor('nationality')) }}" 
+                                                                    value="{{ old('nationality', !profile.nationality? '': profile.nationality) }}"  
+                                                                    placeholder="{{ antl.formatMessage('messages.plnationality') }}" required/>
+                                                                    {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('nationality'), hasErrorFor('nationality')) }}
+                                                        </div>
+                                                    </div>
+                                            <!-- Birth Day  -->   
+                                                    <div class="col-md-3">                                     
+                                                        <div class="form-group">
+                                                            <label for="birthday">{{ antl.formatMessage('messages.birthday') }}</label>
+                                                            <input type="date" name="birthday" id="birthday" 
+                                                            class="form-control form-control rounded-0 {{ elIf('is-invalid',getErrorFor('birthday'), hasErrorFor('birthday')) }}" 
+                                                            value="{{ old('birthday', !profile.birthday? '': profile.birthday) }}"  
+                                                            required/>
+                                                            {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('birthday'), hasErrorFor('birthday')) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            <!-- Gender -->
+                                                <div class="form-row">
+                                                    <div class="col-md-3">                            
+                                                        <div class="form-group">
+                                                            <label for="gender">{{ antl.formatMessage('messages.gender') }}</label>
+                                                            <select class="form-control rounded-0" id="gender" name="gender" required>
+                                                                <option value="male" {{ profile.gender == "male" ?  'selected="selected"' : ''}}>{{ antl.formatMessage('messages.man') }}</option>
+                                                                <option value="female" {{ profile.gender == "female" ?  'selected="selected"' : ''}}>{{ antl.formatMessage('messages.women') }}</option>
+                                                            </select>
+                                                            {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('gender'), hasErrorFor('gender')) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                    <!-- Title Address -->
+                                                <h5>
+                                                    <i class="fas fa-map-marker fa-lg"></i>
+                                                    {{ antl.formatMessage('messages.address_info') }}
+                                                </h5>
+                                             <!-- STREET--> 
+                                                <div class="form-row">
+                                                    <div class="col-md-8">                            
+                                                        <div class="form-group">
+                                                            <label for="addr1_street">{{ antl.formatMessage('messages.addr1_street') }}</label>
+                                                            <input type="text" name="addr1_street" id="addr1_street"
+                                                                    class="form-control form-control rounded-0 {{ elIf('is-invalid',getErrorFor('addr1_street'), hasErrorFor('addr1_street')) }}" 
+                                                                    value="{{ old('addr1_street', !profile.addr1_street? '': profile.addr1_street) }}"  
+                                                                    placeholder="{{ antl.formatMessage('messages.pladdr1_street') }}" required/>
+                                                                    {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('addr1_street'), hasErrorFor('addr1_street')) }}
+                                                        </div>
+                                                    </div>
+                                            <!-- HOUSE number  -->   
+                                                    <div class="col-md-2">                                     
+                                                        <div class="form-group">
+                                                            <label for="addr1_housenr">{{ antl.formatMessage('messages.addr1_housenr') }}</label>
+                                                            <input type="text" name="addr1_housenr" id="addr1_housenr" 
+                                                            class="form-control form-control rounded-0 {{ elIf('is-invalid',getErrorFor('addr1_housenr'), hasErrorFor('addr1_housenr')) }}" 
+                                                            value="{{ old('addr1_housenr', !profile.addr1_housenr? '': profile.addr1_housenr) }}"  
+                                                            placeholder="{{ antl.formatMessage('messages.pladdr1_housenr') }}" required/>
+                                                            {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('addr1_housenr'), hasErrorFor('addr1_housenr')) }}
+                                                        </div>
+                                                    </div>
+                                             <!-- bus  -->   
+                                                    <div class="col-md-2">                                     
+                                                        <div class="form-group">
+                                                            <label for="addr1_bus">{{ antl.formatMessage('messages.addr1_bus') }}</label>
+                                                            <input type="text" name="addr1_bus" id="addr1_bus" 
+                                                            class="form-control form-control rounded-0 {{ elIf('is-invalid',getErrorFor('addr1_bus'), hasErrorFor('addr1_bus')) }}" 
+                                                            value="{{ old('addr1_bus', !profile.addr1_bus? '':profile.addr1_bus) }}"  
+                                                            placeholder="{{ antl.formatMessage('messages.pladdr1_bus') }}"/>
+                                                            {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('addr1_bus'), hasErrorFor('addr1_bus')) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                 <!-- POSTCODE   --> 
+                                                <div class="form-row">
+                                                    <div class="col-md-3">                            
+                                                        <div class="form-group">
+                                                            <label for="addr1_postcode">{{ antl.formatMessage('messages.addr1_postcode') }}</label>
+                                                            <input type="text" name="addr1_postcode" id="addr1_postcode"
+                                                                    class="form-control form-control rounded-0 {{ elIf('is-invalid',getErrorFor('addr1_postcode'), hasErrorFor('addr1_postcode')) }}" 
+                                                                    value="{{ old('addr1_postcode', !profile.addr1_postcode? '': profile.addr1_postcode) }}"  
+                                                                    placeholder="{{ antl.formatMessage('messages.pladdr1_postcode') }}" required/>
+                                                                    {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('addr1_postcode'), hasErrorFor('addr1_postcode')) }}
+                                                        </div>
+                                                    </div>
+                                            <!-- CITY  -->   
+                                                    <div class="col-md-7">                                     
+                                                        <div class="form-group">
+                                                            <label for="addr1_city">{{ antl.formatMessage('messages.addr1_city') }}</label>
+                                                            <input type="text" name="addr1_city" id="addr1_city" 
+                                                            class="form-control form-control rounded-0 {{ elIf('is-invalid',getErrorFor('addr1_city'), hasErrorFor('addr1_city')) }}" 
+                                                            value="{{ old('addr1_city', !profile.addr1_city? '' : profile.addr1_city) }}"  
+                                                            placeholder="{{ antl.formatMessage('messages.pladdr1_city') }}" required/>
+                                                            {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('addr1_city'), hasErrorFor('addr1_city')) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            <!-- Country -->
+                                                <div class="form-row">
+                                                    <div class="col-md-3"> 
+                                                        <div class="form-group">
+                                                            <label for="addr1_country">{{ antl.formatMessage('messages.addr1_country') }}</label>
+                                                            <select class="form-control rounded-0" id="addr1_country" name="addr1_country" required>
+                                                                <option value="Belgium" {{ profile.addr1_country == "Belgium" ?  'selected="selected"' : ''}}>{{ antl.formatMessage('messages.addr1_belgium') }}</option>
+                                                                <option value="Netherland" {{ profile.addr1_country == "Netherland" ?  'selected="selected"' : ''}}>{{ antl.formatMessage('messages.addr1_netherland') }}</option>
+                                                            </select>
+                                                            {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('addr1_country'), hasErrorFor('addr1_country')) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                            <!-- Title CONTACT INFO -->
+                                                <h5>
+                                                    <i class="fas fa-mobile-alt fa-lg"></i>
+                                                    {{ antl.formatMessage('messages.contact_info') }}
+                                                </h5>     
+                                            <!-- PHONE NUMBER -->
+                                                <div class="form-row">
+                                                    <div class="col-md-4">                            
+                                                        <div class="form-group">
+                                                            <label for="phone_1">{{ antl.formatMessage('messages.phone_1') }}</label>
+                                                            <input type="text" name="phone_1" id="phone_1"
+                                                                    class="form-control form-control rounded-0 {{ elIf('is-invalid',getErrorFor('phone_1'), hasErrorFor('phone_1')) }}" 
+                                                                    value="{{ old('phone_1', !profile.phone_1? '': profile.phone_1) }}"  
+                                                                    />
+                                                                    {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('phone_1'), hasErrorFor('phone_1')) }}
+                                                        </div>
+                                                    </div>
+                                            <!-- MOBILE NUMBER -->   
+                                                    <div class="col-md-4">                                     
+                                                        <div class="form-group">
+                                                            <label for="mobile_1">{{ antl.formatMessage('messages.mobile_1') }}</label>
+                                                            <input type="text" name="mobile_1" id="mobile_1" 
+                                                            class="form-control form-control rounded-0 {{ elIf('is-invalid',getErrorFor('mobile_1'), hasErrorFor('mobile_1')) }}" 
+                                                            value="{{ old('mobile_1', !profile.mobile_1? '': profile.mobile_1) }}"  
+                                                            />
+                                                            {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('mobile_1'), hasErrorFor('mobile_1')) }}
+                                                        </div>
+                                                    </div>
+                                               <!-- FAX NUMBER -->   
+                                                    <div class="col-md-4">                                     
+                                                        <div class="form-group">
+                                                            <label for="fax_1">{{ antl.formatMessage('messages.fax_1') }}</label>
+                                                            <input type="text" name="fax_1" id="fax_1" 
+                                                            class="form-control form-control rounded-0 {{ elIf('is-invalid',getErrorFor('fax_1'), hasErrorFor('fax_1')) }}" 
+                                                            value="{{ old('fax_1', !profile.fax_1? '':profile.fax_1) }}"  
+                                                            />
+                                                            {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('fax_1'), hasErrorFor('fax_1')) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                <!-- TITEL COMPANY INFO -->
+                                                <h5>
+                                                    <i class="fas fa-building fa-lg"></i>
+                                                    {{ antl.formatMessage('messages.company_info') }}
+                                                </h5> 
+                                                <p>{{ antl.formatMessage('messages.company_message') }}</p>
+                                        <!-- VAT NUMBER -->
+                                                <div class="form-row">
+                                                    <div class="col-md-4">                            
+                                                        <div class="form-group">
+                                                            <label for="vat_number">{{ antl.formatMessage('messages.vat_number') }}</label>
+                                                            <input type="text" name="vat_number" id="vat_number"
+                                                                    class="form-control form-control rounded-0 {{ elIf('is-invalid',getErrorFor('vat_number'), hasErrorFor('vat_number')) }}" 
+                                                                    value="{{ old('vat_number', !profile.vat_number? '':profile.vat_number) }}"  
+                                                                    />
+                                                                    {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('vat_number'), hasErrorFor('vat_number')) }}
+                                                        </div>
+                                                    </div>
+                                        <!-- COMPANY NAME -->
+                                                    <div class="col-md-8">                            
+                                                        <div class="form-group">
+                                                            <label for="company_name">{{ antl.formatMessage('messages.company_name') }}</label>
+                                                            <input type="text" name="company_name" id="company_name"
+                                                                    class="company companyreq form-control form-control rounded-0 {{ elIf('is-invalid',getErrorFor('company_name'), hasErrorFor('company_name')) }}" 
+                                                                    value="{{ old('company_name', !profile.company_name? '': profile.company_name) }}"  
+                                                                    />
+                                                                    {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('company_name'), hasErrorFor('company_name')) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                    <!-- COMPANY STREET--> 
+                                                <div class="form-row">
+                                                    <div class="col-md-8">                            
+                                                        <div class="form-group">
+                                                            <label for="company_addr_street">{{ antl.formatMessage('messages.company_addr_street') }}</label>
+                                                            <input type="text" name="company_addr_street" id="company_addr_street"
+                                                                    class="company companyreq form-control form-control rounded-0 {{ elIf('is-invalid',getErrorFor('company_addr_street'), hasErrorFor('company_addr_street')) }}" 
+                                                                    value="{{ old('company_addr_street', !profile.company_addr_street? '': profile.company_addr_street) }}"  
+                                                                    placeholder="{{ antl.formatMessage('messages.plcompany_addr_street') }}"/>
+                                                                    {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('company_addr_street'), hasErrorFor('company_addr_street')) }}
+                                                        </div>
+                                                    </div>
+                                    <!-- COMPANY HOUSE number  -->   
+                                                    <div class="col-md-2">                                     
+                                                        <div class="form-group">
+                                                            <label for="company_addr_housenr">{{ antl.formatMessage('messages.company_addr_housenr') }}</label>
+                                                            <input type="text" name="company_addr_housenr" id="company_addr_housenr" 
+                                                            class="company companyreq form-control form-control rounded-0 {{ elIf('is-invalid',getErrorFor('company_addr_housenr'), hasErrorFor('company_addr_housenr')) }}" 
+                                                            value="{{ old('company_addr_housenr', !profile.company_addr_housenr? '': profile.company_addr_housenr) }}"  
+                                                            placeholder="{{ antl.formatMessage('messages.plcompany_addr_housenr') }}"/>
+                                                            {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('company_addr_housenr'), hasErrorFor('company_addr_housenr')) }}
+                                                        </div>
+                                                    </div>
+                                    <!--COMPANY  bus  -->   
+                                                    <div class="col-md-2">                                     
+                                                        <div class="form-group">
+                                                            <label for="company_addr_bus">{{ antl.formatMessage('messages.company_addr_bus') }}</label>
+                                                            <input type="text" name="company_addr_bus" id="company_addr_bus" 
+                                                            class="company form-control form-control rounded-0 {{ elIf('is-invalid',getErrorFor('company_addr_bus'), hasErrorFor('company_addr_bus')) }}" 
+                                                            value="{{ old('company_addr_bus', !profile.company_addr_bus? '': profile.company_addr_bus) }}"  
+                                                            placeholder="{{ antl.formatMessage('messages.plcompany_addr_bus') }}"/>
+                                                            {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('company_addr_bus'), hasErrorFor('company_addr_bus')) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                    <!-- COMPANY POSTCODE   --> 
+                                                <div class="form-row">
+                                                    <div class="col-md-3">                            
+                                                        <div class="form-group">
+                                                            <label for="company_addr_postcode">{{ antl.formatMessage('messages.company_addr_postcode') }}</label>
+                                                            <input type="text" name="company_addr_postcode" id="company_addr_postcode"
+                                                                    class="company companyreq form-control form-control rounded-0 {{ elIf('is-invalid',getErrorFor('company_addr_postcode'), hasErrorFor('company_addr_postcode')) }}" 
+                                                                    value="{{ old('company_addr_postcode',!profile.company_addr_postcode? '': profile.company_addr_postcode) }}"  
+                                                                    placeholder="{{ antl.formatMessage('messages.plcompany_addr_postcode') }}"/>
+                                                                    {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('company_addr_postcode'), hasErrorFor('company_addr_postcode')) }}
+                                                        </div>
+                                                    </div>
+                                    <!-- COMPANY CITY  -->   
+                                                    <div class="col-md-7">                                     
+                                                        <div class="form-group">
+                                                            <label for="company_addr_city">{{ antl.formatMessage('messages.company_addr_city') }}</label>
+                                                            <input type="text" name="company_addr_city" id="company_addr_city" 
+                                                            class="company companyreq form-control form-control rounded-0 {{ elIf('is-invalid',getErrorFor('company_addr_city'), hasErrorFor('company_addr_city')) }}" 
+                                                            value="{{ old('company_addr_city', !profile.company_addr_city? '':profile.company_addr_city) }}"  
+                                                            placeholder="{{ antl.formatMessage('messages.plcompany_addr_city') }}"/>
+                                                            {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('company_addr_city'), hasErrorFor('company_addr_city')) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                    <!-- COMPANY Country -->
+                                                <div class="form-row">
+                                                    <div class="col-md-3"> 
+                                                        <div class="form-group">
+                                                            <label for="company_addr_country">{{ antl.formatMessage('messages.company_addr_country') }}</label>
+                                                            <select class="company companyreq form-control rounded-0" id="company_addr_country" name="company_addr_country">
+                                                                <option value="Belgium" {{ profile.company_addr_country == "Belgium" ?  'selected="selected"' : ''}}>{{ antl.formatMessage('messages.addr1_belgium') }}</option>
+                                                                <option value="Netherland" {{ profile.company_addr_country == "Netherland" ?  'selected="selected"' : ''}}>{{ antl.formatMessage('messages.addr1_netherland') }}</option>
+                                                            </select>
+                                                            {{ elIf('<div class="invalid-feedback">$self</div>', getErrorFor('company_addr_country'), hasErrorFor('company_addr_country')) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                    <!-- TITEL OTHER INFO -->
+                                                <h5>
+                                                    <i class="fas fa-newspaper fa-lg"></i>
+                                                    {{ antl.formatMessage('messages.other_info') }}
+                                                </h5> 
+                                    <!-- Newsletter -->
+                                                <div class="form-check">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="checkbox" name="newsletter" id="newsletter" {{ !profile.newsletter? '':'checked' }}>{{ antl.formatMessage('messages.newsletter') }}
+                                                    </label>
+                                                </div>    
+                                            </div>
+                                <!-- PICTURE TAB CONTENT -->
+                                            <div class="tab-pane container" id="tab-2">
+                                    <!---TITEL - PICTURE -->
+                                                <h5>
+                                                    <i class="fas fa-camera-retro fa-lg"></i>
+                                                    {{ antl.formatMessage('messages.picture') }}
+                                                </h5>
+                                        <!-- File input--> 
+                                                <div class="form-row">
+                                                    <div class="col-md-6">                            
+                                                        <div class="form-group">
+                                                            <input type="file" id="avatar" name="avatar"
+                                                                class="dropify" 
+                                                                data-max-file-size="1M" 
+                                                                data-allowed-file-extensions="gif jpg jpeg png" 
+                                                                data-show-remove="false"    
+                                                                data-default-file="{{ old('avatar', !profile.avatar? '' : profile.avatar) }}"/>        
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                <!-- USER TAB CONTENT -->
+                                            <div class="tab-pane container" id="menu2">TAB USER</div>
+                                        </div>     
+                                        <hr>             
+                                        <button type="submit" class="btn btn-success btn float-right " id="btnLogin">{{ antl.formatMessage('messages.confirm') }}</button>                                    
+                                        <button type="button" onclick="window.location.href='/'" class="btn btn-primary btn float-right mr-2" id="btnBack">{{ antl.formatMessage('messages.back') }}</button>
+                                    </form>
+                                </div>
+                                <!--/card-block-->
+                            </div>
+                            <!-- /form card login -->
+                        </div>
+                    </div>
+                    <!--/row-->
+                </div>
+                <!--/col-->
+            </div>
+            <!--/row-->
+        </div>
+        <!--/container-->
+    </main>
+@endsection
+
+@section('scripts')
+    <script src="/add-ons/dropify/dist/js/dropify.min.js"></script>
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function() {
+        
+        // Initialize Dropify 
+            $('.dropify').dropify({
+                messages: {
+                    'default': "{{antl.formatMessage('messages.drag_drop')}}",
+                    'replace': "{{antl.formatMessage('messages.drag_drop_replace')}}",
+                    'remove':  "{{antl.formatMessage('messages.remove')}}",
+                    'error':   "{{antl.formatMessage('messages.oops')}}"
+                }
+            });
+     
+        // Disable company address if no Vat number
+            var value = $('#vat_number').val();
+            if(!value) {
+                $('.company').attr('disabled', true);
+            }else{
+                $('.company').prop('disabled', false);
+                $(".companyreq").prop('required',true);
+            }
+        // Check if field is fieled in 
+            $('#vat_number').keyup(function(){
+                if($(this).val().length !=0){
+                    $('.company').attr('disabled', false); 
+                    $(".companyreq").prop('required',true);           
+                }else{
+                    $('.company').attr('disabled',true);
+                }
+            })
+        });
+
+        
+       
+    </script>
+@endsection
+
+
+
+   

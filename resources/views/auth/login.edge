@@ -1,0 +1,64 @@
+
+@layout('layouts.app')
+@section('content')
+    <main role="main">
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-6 mx-auto">
+                            <!-- form card login -->
+                            <div class="card rounded-0">
+                                <div class="card-header">
+                                    <h3 class="mb-0">
+                                        <i class="fas fa-sign-in-alt fa-lg"></i>
+                                        {{ antl.formatMessage('messages.login') }}
+                                    </h3>
+                                </div>
+                                <div class="card-body">
+
+                                    @include('partials.notification')
+
+                                    <form id="formLogin" class="form" role="form" novalidate autocomplete="off" method="POST" action="{{ route('login')}}">
+                                    {{ csrfField() }}
+                        <!-- EMAIL -->                                       
+                                        <div class="form-group">
+                                            <label for="email">{{ antl.formatMessage('messages.email') }}</label>
+                                            <input type="email" name="email" id="email"
+                                                    class="form-control form-control-lg rounded-0"  
+                                                    placeholder="example@example.com" required />
+                                        </div>
+                        <!-- PASSWORD -->                                       
+                                        <div class="form-group">
+                                            <label for="password">{{ antl.formatMessage('messages.password') }}</label>
+                                            <input type="password" name="password" id="password" 
+                                            class="form-control form-control-lg rounded-0" 
+                                            placeholder="{{ antl.formatMessage('messages.plpassword') }}" required/>
+                                        </div>
+                        <!-- REMEMBER ME -->
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="checkbox" name="remember" id="remember">{{ antl.formatMessage('messages.rememberMe') }}
+                                            </label>
+                                        </div>
+
+                                        <button type="submit" class="btn btn-success btn-lg float-right" id="btnLogin">{{ antl.formatMessage('messages.confirm') }}</button>
+                                    </form>
+                                    <p>
+                                        <a href="/password/reset">{{ antl.formatMessage('messages.forgotPassword') }}</a>
+                                    </p>
+                                </div>
+                                <!--/card-block-->
+                            </div>
+                            <!-- /form card login -->
+                        </div>
+                    </div>
+                    <!--/row-->
+                </div>
+                <!--/col-->
+            </div>
+            <!--/row-->
+        </div>
+        <!--/container-->
+    </main>
+@endsection

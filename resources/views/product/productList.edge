@@ -1,0 +1,101 @@
+@layout('layouts.app')
+
+@section('styles')
+  <!--  <link rel="stylesheet" type="text/css" href="/add-ons/DataTables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css"> -->
+ <link rel="stylesheet" type="text/css" href="/add-ons/DataTables/datatables.min.css"> 
+@endsection
+
+@section('content')
+    <main role="main">
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-12 mx-auto">
+                            <div class="card rounded-0">
+                                <div class="card-header">
+                                    <h3 class="mb-0">
+                                        <i class="fas fa-archive fa-lg"></i>
+                                        {{ antl.formatMessage('products.product_list') }}
+                                    </h3>
+                                </div>
+                                <div class="card-body">
+                                @include('partials.notification')
+                                <div class="table-responsive">
+                                    <table id="product_table" class="table table-sm table-bordered table-hover">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th scope="col">Id</th>
+                                                <th scope="col">{{antl.formatMessage('products.title')}}</th>
+                                                <th scope="col">{{antl.formatMessage('products.sub_title')}}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @each(product in products)
+                                                <tr>
+                                                    <td>{{ product.id }}</td>
+                                                    <td>{{ product.title }}</td>
+                                                    <td>{{ product.sub_title }}</td>
+                                                </tr>
+                                            @endeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                                    <hr>             
+                                    <button type="button" onclick="window.location.href='/my-product/create'" class="btn btn-success btn float-right " id="btnAdd">{{ antl.formatMessage('products.add') }}</button>                                    
+                                    <button type="button" onclick="window.location.href='/'" class="btn btn-primary btn float-right mr-2" id="btnBack">{{ antl.formatMessage('messages.back') }}</button>
+                                </div>
+                            </div>
+                        </div>
+                     </div>
+                </div>
+            </div>
+        </div>
+    </main>
+@endsection
+
+@section('scripts')
+    <script type="text/javascript" src="/add-ons/DataTables/datatables.min.js"></script>
+    <script type="text/javascript" src="/add-ons/DataTables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js"></script> 
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready( function () {
+    // DataTables initialization   
+             
+            var productTable = $('#product_table').DataTable({
+                dom :"<'myfilter'f><'mylength'l>t",
+                info: false,
+                order : [[ 0, "asc" ]],
+                paging : false,
+                language: {
+                    search: "",
+                    searchPlaceholder: "Zoeken...",
+                    zeroRecords: "{{antl.formatMessage('messages.zero_records')}}"
+                },
+                columnDefs : [
+                    {
+                        "targets": [ 0 ],
+                        "visible": false,
+                        "searchable": false
+                    },
+                ]
+              
+            });
+       
+    //Click on table row
+            $('#product_table').on('click', 'tr', function () {
+                var row = productTable.row(this).data();
+                var productId = row[0];
+                var path = "./my-product/edit/" + productId;
+                window.location.href = path;
+            });
+
+            $(".alert").fadeTo(2000, 500).slideUp(500, function(){
+                $(".alert").slideUp(500);
+            });
+        });  
+    </script>
+@endsection
+
+
+
+   

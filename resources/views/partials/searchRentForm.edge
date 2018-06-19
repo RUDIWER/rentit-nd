@@ -1,0 +1,96 @@
+@section('styles')
+@endsection
+
+@section('content')
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-12 mx-auto">
+            <!-- form card Profile -->
+                <div class="card rounded-0">
+                    <div class="card-header">
+                        <h3 class="mb-0">
+                            <i class="fas fa-search fa-lg"></i>
+                            {{ antl.formatMessage('messages.search_now') }}
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        {{ geo }}
+                        @include('partials.notification')
+                        <form id="searchRentForm" class="form" role="form" novalidate autocomplete="off" method="POST" action="/search-rent-results"  enctype="multipart/form-data">
+                            <input type="hidden" id="latitude" name="latitude"/>
+                            <input type="hidden" id="longitude" name="longitude"/> 
+                            <input type="hidden" id="postcode" name="postcode"/> 
+                            <input type="hidden" id="city" name="city"/> -
+                            {{ csrfField() }}
+                <!-- Product or Service -->
+                            <div class="form-row">
+                                <div class="col-md-12">                            
+                                    <div class="form-group">
+                                        <label for="search_pors">{{ antl.formatMessage('messages.pors') }}</label>
+                                        <select class="form-control rounded-0" id="search_pors" name="search_pors" required>
+                                            <option value="empty" selected disabled>{{ antl.formatMessage('messages.select')}}</option>
+                                            @each( pors in porses )
+                                                @if( pors.id == old('pors'))
+                                                    <option value="{{ pors.id }}" selected="selected">{{ pors.category_name }}</option>
+                                                @else
+                                                    <option value="{{ pors.id }}">{{ pors.category_name }}</option> 
+                                                @endif
+                                            @endeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                <!-- Description What to Rent -->
+                            <div class="form-row">
+                                <div class="col-md-12">                            
+                                    <div class="form-group">
+                                        <label for="search_what">{{ antl.formatMessage('messages.search_what') }}</label>
+                                        <input type="text" name="search_what" id="search_what"
+                                                class="form-control form-control rounded-0"
+                                                value="{{ old('title','')}}"  
+                                                placeholder="{{ antl.formatMessage('messages.placeholder_what') }}" required />
+                                    </div>
+                                </div>
+                            </div>
+                <!-- Where  -->
+                <!-- Geolocate ev. via https://community.algolia.com/places/documentation.html  ipv. google maps gebruikt openstreets -->
+                            <div class="form-row">
+                                <div class="col-md-12">                            
+                                    <div class="form-group">
+                                        <label for="search_where">{{ antl.formatMessage('messages.search_where') }}</label>
+                                        <input type="text" name="search_where" id="search_where"
+                                                class="form-control form-control rounded-0" 
+                                                value="{{ old('title', '' ) }}" 
+                                                onFocus="geolocate()" 
+                                                placeholder="{{ antl.formatMessage('messages.placeholder_where') }}" required/>
+                                    </div>
+                                </div>
+                            </div>
+                <!-- Max Distance -->
+                            <div class="form-row">
+                                <div class="col-md-12">                            
+                                    <div class="form-group">
+                                        <label for="search_dist">{{ antl.formatMessage('messages.search_dist')}}</label>    
+                                        <select class="form-control rounded-0" id="search_dist" name="search_dist" title="{{ antl.formatMessage('messages.select')}}">
+                                            <option selected value="0">{{ antl.formatMessage('messages.in_city')}}</option>  
+                                            <option value="7">{{ antl.formatMessage('messages.5_km')}}</option>
+                                            <option value="12">{{ antl.formatMessage('messages.10_km')}}</option>
+                                            <option value="22">{{ antl.formatMessage('messages.20_km')}}</option>
+                                            <option value="52">{{ antl.formatMessage('messages.50_km')}}</option>
+                                            <option value="999">{{ antl.formatMessage('messages.999_km')}}</option>
+                                        </select> 
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>             
+                            <button type="submit" class="btn btn-success btn float-right " id="btnSubmit" name="btnSubmit">{{ antl.formatMessage('messages.confirm') }}</button>                              
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div>     
+@endsection
+
+@section('scripts')
+@endsection
