@@ -1,23 +1,11 @@
 # AdonisJs Laravel Mix
 
+
+This study project is based on the boilerplate :
 [AdonisJs](http://adonisjs.com/) + [Laravel Mix](https://laravel.com/docs/5.6/mix)
 
 
-When you start a new project with *AdonisJs* it makes use of blueprints to create the project files structure. This repository is just a blueprint that integrates *Laravel Mix* with *Adonis fullstack app*.
-
-
-## Install
-
-Create a new project with:
-
-```shell
-  adonis new <my-project> --blueprint marcim/adonisjs-laravel-mix
-```
-
-> Change `<my-project>` to your project name.
-
-
-## Usage
+## Usage boilerplate
 
 The following commands are available:
 
@@ -30,21 +18,3 @@ The following commands are available:
 | npm run asset-prod | Compiles assets for production. |
 
 
-## Features
-
-For more information see: [AdonisJs documentation](http://adonisjs.com/docs) and [Laravel Mix documentation](https://laravel.com/docs/5.6/mix).
-
-
-## Licenses
-
-[AdonisJs license](https://github.com/adonisjs/adonis-framework/blob/develop/LICENSE.txt)  
-[Laravel Mix license](https://github.com/JeffreyWay/laravel-mix/blob/master/LICENSE)  
-[VueJs license](https://github.com/vuejs/vue/blob/master/LICENSE)
-
-
-## Contributing
-
-Suggestions and contributions are welcome via Pull Requests.
-
-
-Thanks!
